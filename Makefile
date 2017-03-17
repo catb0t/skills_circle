@@ -1,4 +1,4 @@
-CC ?= gcc
+CC := gcc
 normal: test.c
 	$(CC) test.c -ggdb -O0 -o test
 
