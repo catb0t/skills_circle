@@ -1,6 +1,7 @@
-#include <stdio.h>
 #include <stdarg.h>
 #include "common.h"
+
+#define MATH_PI (long double)3.14159265358979323846264338327950288419716939937510582097494459230
 
 #define define_circle2d_getter(member_name) \
   ldbl_t circle2d_get ## member_name (const circle2d_t * const c); \
@@ -34,6 +35,8 @@ typedef struct st_circle2d_t {
 
 } circle2d_t;
 
+typedef circle2d_t c2d_t;
+
 /* getters for x y radius */
 define_circle2d_getter(_x);
 define_circle2d_getter(_y);
@@ -56,6 +59,14 @@ void        err_negative (const char* const fun);
 // seer
 char*       circle2d_see (const circle2d_t * const c);
 
+ldbl_t      circle2d_get_area (const circle2d_t * const c);
+ldbl_t circle2d_get_perimeter (const circle2d_t * const c);
+
+bool circle2d_overlaps (const circle2d_t* const a, const circle2d_t* const b);
+bool circle2d_contains (const circle2d_t* const a, const circle2d_t* const b);
+
+bool circle2d_contains_point (const circle2d_t* const c, const ldbl_t a, const ldbl_t b);
+
 bool any_negative (const size_t args, ...) {
   va_list va;
   va_start(va, args);
@@ -73,7 +84,7 @@ bool any_negative (const size_t args, ...) {
 
 // fails on negative values
 void err_negative (const char* const fun) {
-  printf("circle2d: %s: argument to %s was negative ", fun, fun);
+  printf("circle2d: %s: argument to %s was negative\n", fun, fun);
 }
 
 // make a new circle2d_t object from params
@@ -131,10 +142,41 @@ char* circle2d_see (const circle2d_t * const c) {
   return str1;
 }
 
-bool circle_overlaps (const circle2d_t const * a, const circle2d_t const * b) {
+ldbl_t circle2d_get_area (const circle2d_t * const c) {
+  return MATH_PI * (c->_radius * c->_radius);
+}
+
+ldbl_t circle2d_get_perimeter (const circle2d_t * const c) {
+  return MATH_PI * 2 * c->_radius;
+}
+
+bool circle2d_contains_point (const circle2d_t* const c, const ldbl_t x, const ldbl_t y) {
+  ldbl_t cx = c->_x, cy = c->_y, cr = c->_radius;
+
+  return ((fabsl(x - cx) < cr) && (fabsl(y - cy) < cr));
+}
+
+bool circle2d_contains (const circle2d_t* const a, const circle2d_t* const b) {
   ldbl_t
-    ax = a->_x, ay = a->_y, ar = a->_radius;
+    ax = a->_x, ay = a->_y, ar = a->_radius,
     bx = b->_x, by = b-> _y, br = b->_radius;
 
+  if ((fabsl(ax - bx) < ar) && (fabsl(ay - by) < ar) && (br <= ar)) {
+    return true;
+  }
+
   return false;
+}
+
+bool circle2d_overlaps (const circle2d_t* const a, const circle2d_t* const b) {
+  ldbl_t
+    ax = a->_x, ay = a->_y, ar = a->_radius,
+    bx = b->_x, by = b-> _y, br = b->_radius;
+
+  if ( circle2d_contains_point(a, bx, by) || circle2d_contains(a, b) ) {
+    return true;
+  }
+
+  ldbl_t dx = fabsl(ax - bx), dy = fabsl(ay - by), dr = fabsl(ar - br);
+  return dx < dr || dy < dr;
 }
