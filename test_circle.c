@@ -31,6 +31,5 @@ Test(ci, cpt) {
   b = circle2d_new(1, 0, 4);
 
   cr_assert(circle2d_contains(a, b));
-
 }
 

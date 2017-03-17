@@ -131,8 +131,8 @@
   #define report_ctor(obj) static size_t uid = 0; dbg_prn("\x1b[33;1mctor \x1b[30;1m%s #%zu\x1b[0m\n", #obj, (obj)->uid = uid++)
 
   #define report_dtor(obj) dbg_prn("\x1b[33;1mdtor \x1b[30;1m%s #%zu\x1b[0m\n", #obj, obj->uid)
-#else 
-  #define report_ctor(obj)
+#else
+  #define report_ctor(obj) static size_t uid = 0; (obj)->uid = uid++
   #define report_dtor(obj)
 #endif
 
