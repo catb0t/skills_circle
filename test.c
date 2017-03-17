@@ -1,4 +1,4 @@
-#include "circle.c"
+#include "circle.h"
 
 
 /* !! MAIN !! */

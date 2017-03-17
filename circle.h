@@ -132,5 +132,9 @@ char* circle2d_see (const circle2d_t * const c) {
 }
 
 bool circle_overlaps (const circle2d_t const * a, const circle2d_t const * b) {
-  
+  ldbl_t
+    ax = a->_x, ay = a->_y, ar = a->_radius;
+    bx = b->_x, by = b-> _y, br = b->_radius;
+
+  return false;
 }
